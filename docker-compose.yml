@@ -11,6 +11,8 @@ services:
         working_dir: /app
         volumes:
             - '.:/app'
+            - './docker/postgres:/docker-entrypoint-initdb.d'
+            - 'postgres-data:/var/lib/postgresql/data'
         environment:
             - POSTGRES_USER=admin
             - POSTGRES_PASSWORD=adminadmin
@@ -34,3 +36,6 @@ services:
             - '.:/app'
             - './docker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/fpm/conf.d/99-overrides.ini'
             - './docker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
+volumes:
+    postgres-data:
+        driver: local
