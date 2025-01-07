@@ -28,7 +28,7 @@ services:
             - '7641:80'
 
     php-fpm:
-        build: phpdocker/php-fpm
+        build: docker/php-fpm
         working_dir: /app
         volumes:
             - '.:/app'
