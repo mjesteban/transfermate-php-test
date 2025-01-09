@@ -3,43 +3,43 @@
 ###############################################################################
 version: '3.1'
 services:
-    redis:
-        image: 'redis:alpine'
-        container_name: tmpt-redis
+  redis:
+    image: 'redis:alpine'
+    container_name: tmpt-redis
 
-    postgres:
-        image: 'postgres:15-alpine'
-        container_name: tmpt-postgres
-        working_dir: /app
-        volumes:
-            - '.:/app'
-            - './docker/postgres:/docker-entrypoint-initdb.d'
-            - 'postgres-data:/var/lib/postgresql/data'
-        environment:
-            - POSTGRES_USER=admin
-            - POSTGRES_PASSWORD=adminadmin
-            - POSTGRES_DB=library
-        ports:
-            - '7645:5432'
+  postgres:
+    image: 'postgres:15-alpine'
+    container_name: tmpt-postgres
+    working_dir: /transfermate-php-test
+    volumes:
+      - '.:/transfermate-php-test'
+      - './docker/postgres:/docker-entrypoint-initdb.d'
+      - 'postgres-data:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=adminadmin
+      - POSTGRES_DB=library
+    ports:
+      - '7645:5432'
 
-    webserver:
-        image: 'nginx:alpine'
-        container_name: tmpt-webserver
-        working_dir: /app
-        volumes:
-            - '.:/app'
-            - './docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
-        ports:
-            - '7641:80'
+  webserver:
+    image: 'nginx:alpine'
+    container_name: tmpt-webserver
+    working_dir: /transfermate-php-test
+    volumes:
+      - '.:/transfermate-php-test'
+      - './docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+    ports:
+      - '7641:80'
 
-    php-fpm:
-        build: docker/php-fpm
-        container_name: tmpt-php-fpm
-        working_dir: /app
-        volumes:
-            - '.:/app'
-            - './docker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/fpm/conf.d/99-overrides.ini'
-            - './docker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
+  php-fpm:
+    build: docker/php-fpm
+    container_name: tmpt-php-fpm
+    working_dir: /transfermate-php-test
+    volumes:
+      - '.:/transfermate-php-test'
+      - './docker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/fpm/conf.d/99-overrides.ini'
+      - './docker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
 volumes:
-    postgres-data:
-        driver: local
+  postgres-data:
+    driver: local

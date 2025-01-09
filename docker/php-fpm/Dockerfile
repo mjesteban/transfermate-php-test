@@ -1,5 +1,5 @@
 FROM phpdockerio/php:8.3-fpm
-WORKDIR "/app"
+WORKDIR "/transfermate-php-test"
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
