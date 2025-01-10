@@ -8,11 +8,15 @@ use App\Exceptions\RouteNotFoundException;
 
 class Router
 {
-    private array $routes;
+    private array $routes = [];
 
-    public function get(string $route, callable|array $action): self
+    public function __construct(private Container $container)
     {
-        return $this->register('get', $route, $action);
+    }
+
+    public function post(string $route, callable|array $action): self
+    {
+        return $this->register('post', $route, $action);
     }
 
     public function register(string $requestMethod, string $route, callable|array $action): self
@@ -22,9 +26,9 @@ class Router
         return $this;
     }
 
-    public function post(string $route, callable|array $action): self
+    public function routes(): array
     {
-        return $this->register('post', $route, $action);
+        return $this->routes;
     }
 
     public function resolve(string $requestUri, string $requestMethod)
@@ -40,23 +44,21 @@ class Router
             return call_user_func($action);
         }
 
-        if (is_array($action)) {
-            [$class, $method] = $action;
+        [$class, $method] = $action;
 
-            if (class_exists($class)) {
-                $class = new $class();
+        if (class_exists($class)) {
+            $class = $this->container->get($class);
 
-                if (method_exists($class, $method)) {
-                    return call_user_func_array([$class, $method], []);
-                }
+            if (method_exists($class, $method)) {
+                return call_user_func_array([$class, $method], []);
             }
         }
 
         throw new RouteNotFoundException();
     }
 
-    public function routes(): array
+    public function get(string $route, callable|array $action): self
     {
-        return $this->routes;
+        return $this->register('get', $route, $action);
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
+use Generator;
+use PDOStatement;
+
 abstract class Model
 {
     protected DB $db;
@@ -11,5 +14,12 @@ abstract class Model
     public function __construct()
     {
         $this->db = App::db();
+    }
+
+    public function fetchLazy(PDOStatement $statement): Generator
+    {
+        foreach ($statement as $record) {
+            yield $record;
+        }
     }
 }

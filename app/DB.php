@@ -29,4 +29,9 @@ class DB
             throw new PDOException($e->getMessage(), (int) $e->getCode());
         }
     }
+
+    public function __call(string $name, array $arguments)
+    {
+        return call_user_func_array([$this->pdo, $name], $arguments);
+    }
 }
