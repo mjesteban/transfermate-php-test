@@ -18,9 +18,7 @@ class AuthorController
         $authors = $this->author->all();
 
         foreach ($authors as $author) {
-            echo $author['id'] . ': ' . $author['name'] . '<br />';
+            var_dump($author);
         }
-
-//        return View::make('authors', compact('authors'));
     }
 }
