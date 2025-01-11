@@ -18,17 +18,3 @@ RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql pgsql xsl
 
 RUN pecl install xmldiff
-
-#pear xmldiff
-
-#RUN wget http://pear.php.net/go-pear.phar \
-#    && cd .. \
-#    && php go-pear.phar \
-#    && \
-#    && y \
-#    && \
-
-
-
-#apt-get install php-dev
-#pecl install xmldiff
