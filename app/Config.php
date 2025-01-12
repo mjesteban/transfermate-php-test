@@ -17,7 +17,7 @@ class Config
             'db' => [
                 'host' => $env['POSTGRES_HOST'],
                 'user' => $env['POSTGRES_USER'],
-                'pass' => $env['POSTGRES_PASS'],
+                'pass' => $env['POSTGRES_PASSWORD'],
                 'database' => $env['POSTGRES_DB'],
                 'driver' => $env['POSTGRES_DRIVER'] ?? 'pgsql',
             ],

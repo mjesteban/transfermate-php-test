@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Models\Author;
+use App\Services\XmlParseService;
 use App\View;
 
 class AuthorController
@@ -15,6 +16,9 @@ class AuthorController
 
     public function index()
     {
+        $xmlParse = new XmlParseService();
+        $xmlParse->parse();
+        exit;
         $authors = $this->author->all();
 
         foreach ($authors as $author) {

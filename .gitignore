@@ -1,4 +1,5 @@
 .idea
-.env
 vendor
+datasource/*
+.env
 .php-cs-fixer.cache

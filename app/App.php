@@ -5,24 +5,35 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\RouteNotFoundException;
-use Psr\Container\ContainerInterface;
+use Dotenv\Dotenv;
 
 class App
 {
     private static DB $db;
+    private Config $config;
 
     public function __construct(
         protected Container $container,
-        protected Router $router,
-        protected array $request,
-        protected Config $config
+        protected ?Router $router = null,
+        protected array $request = []
     ) {
-        static::$db = new DB($config->db ?? []);
     }
 
     public static function db(): DB
     {
         return static::$db;
+    }
+
+    public function boot(): static
+    {
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__));
+        $dotenv->load();
+
+        $this->config = new Config($_ENV);
+
+        static::$db = new DB($this->config->db ?? []);
+
+        return $this;
     }
 
     public function run()
