@@ -19,7 +19,7 @@ class XMLMigrateService
         $this->db = App::db();
     }
 
-    public function migrate(string $dir)
+    public function migrate(string $dir): void
     {
         try {
             $this->scanner->checkDirectory($dir);

@@ -61,7 +61,7 @@ class XMLProcessor
         return $this->schema;
     }
 
-    private function extractInNodes()
+    private function extractInNodes(): void
     {
         $author = '';
         $title = '';
@@ -84,37 +84,6 @@ class XMLProcessor
 
         if ($author && $title) {
             $this->booksBuffer[] = ['author' => $author, 'title' => $title];
-        }
-    }
-
-    private function save(string $author, string $title): void
-    {
-        try {
-            $this->db->beginTransaction();
-
-            $insert = $this->db->prepare(
-                <<<SQL
-                WITH 
-                new_author AS (
-                    INSERT INTO authors (name) VALUES (:name)
-                        ON CONFLICT (name) DO NOTHING
-                        RETURNING id
-                ),
-                existing_author AS (
-                    SELECT id FROM authors WHERE name = :name
-                )
-                INSERT INTO books (title, author_id)
-                VALUES (:title, COALESCE((SELECT id FROM new_author), (SELECT id FROM existing_author)))
-                    ON CONFLICT (title, author_id) DO NOTHING
-                SQL
-            );
-
-            $insert->execute([$author, $title]);
-
-            $this->db->commit();
-        } catch (Exception $exception) {
-            $this->db->rollBack();
-            echo $exception->getMessage();
         }
     }
 }
