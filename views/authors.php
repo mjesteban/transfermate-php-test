@@ -10,11 +10,10 @@ declare(strict_types=1);
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <meta name='description'
-          content='Popular books and their authors.'>
-    <meta name='keywords' content='Books, Authors>
-    <meta name=' author
-    ' content='Mario Joseph Esteban'>
-    <title>Famous Books and Their Authors</title>
+          content='Transfermate PHP Test by Mario Joseph Esteban.'>
+    <meta name='keywords' content='Books, Authors, Mario Joseph Esteban, Transfermate'>
+    <meta name='author' content='Mario Joseph Esteban'>
+    <title>Transfermate PHP Test by Mario Joseph Esteban</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,7 +22,7 @@ declare(strict_types=1);
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            background-color: #f4f4f9;
+            background-color: whitesmoke;
         }
 
         table {
@@ -31,7 +30,7 @@ declare(strict_types=1);
             max-width: 800px;
             border-collapse: collapse;
             margin: 20px auto;
-            background: #ffffff;
+            background: white;
         }
 
         th, td {
@@ -41,7 +40,7 @@ declare(strict_types=1);
         }
 
         th {
-            background-color: #6c63ff;
+            background-color: black;
             color: white;
         }
 
@@ -101,20 +100,43 @@ declare(strict_types=1);
         button[type='submit'] {
             padding: 10px 20px;
             border: none;
-            background-color: #6c63ff;
+            background-color: black;
             color: white;
             font-size: 16px;
             cursor: pointer;
-            border-radius: 0 4px 4px 0;
         }
 
         button[type='submit']:hover {
-            background-color: #5753d9;
+            background-color: black;
+        }
+
+        /* Your existing CSS styles */
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
         }
     </style>
     <script>
         console.log('Hello World!');
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('#authors tbody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.classList.add('slide-in');
+                }, index * 75)
+            });
+        });
     </script>
 </head>
 <body>
@@ -130,7 +152,7 @@ declare(strict_types=1);
         </label>
         <button type='submit'>Search</button>
     </form>
-    <table>
+    <table id="authors">
         <thead>
         <tr>
             <th>Author</th>
