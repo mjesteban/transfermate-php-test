@@ -1,0 +1,2 @@
+*/2 * * * * php /transfermate-php-test/bin/migrate.php >> /var/log/cron/cron.log 2>&1
+

@@ -5,7 +5,6 @@ RUN apt-get update \
     && apt-get -y --no-install-recommends install \
         git \
         curl \
-        wget \
         libpq-dev \
         libxml2-dev \
         libxslt-dev \
@@ -18,3 +17,5 @@ RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql pgsql xsl
 
 RUN pecl install xmldiff
+
+RUN mkdir datasource
