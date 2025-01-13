@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Models\Author;
-use App\Services\XmlParseService;
 use App\View;
 
 class AuthorController
@@ -14,15 +13,10 @@ class AuthorController
     {
     }
 
-    public function index()
+    public function index(): View
     {
-        $xmlParse = new XmlParseService();
-        $xmlParse->parse();
-        exit;
         $authors = $this->author->all();
 
-        foreach ($authors as $author) {
-            var_dump($author);
-        }
+        return View::make('authors', ['authors' => $authors]);
     }
 }

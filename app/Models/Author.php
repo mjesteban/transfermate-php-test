@@ -12,14 +12,14 @@ class Author extends Model
     public function all(): Generator
     {
         $query = <<<SQL
-        SELECT name, title
+        SELECT name, title AS book
             FROM authors a
         INNER JOIN books b
             ON a.id = b.author_id
         SQL;
 
-        $stmt = $this->db->query($query);
+        $statement = $this->db->query($query);
 
-        return $this->fetchLazy($stmt);
+        return $this->fetchLazy($statement);
     }
 }

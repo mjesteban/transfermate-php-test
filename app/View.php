@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\ViewNotFoundException;
+use Generator;
 
 class View
 {
@@ -14,7 +15,7 @@ class View
     ) {
     }
 
-    public static function make(string $view, array $params = []): static
+    public static function make(string $view, array|Generator $params = []): static
     {
         return new static($view, $params);
     }
@@ -26,7 +27,7 @@ class View
 
     public function render(): string
     {
-        $viewPath = VIEW_PATH . '/' . $this->view . '.php';
+        $viewPath = VIEW_PATH.'/'.$this->view.'.php';
 
         if (!file_exists($viewPath)) {
             throw new ViewNotFoundException();
