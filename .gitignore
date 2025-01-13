@@ -1,5 +1,6 @@
 .idea
 vendor
 datasource/*
+docker/cron/log
 .env
 .php-cs-fixer.cache

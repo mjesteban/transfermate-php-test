@@ -12,13 +12,29 @@ class Author extends Model
     public function all(): Generator
     {
         $query = <<<SQL
-        SELECT name, title AS book
+        SELECT name, COALESCE(title, '<none> (no books found)') AS book
             FROM authors a
-        INNER JOIN books b
+        LEFT JOIN books b
             ON a.id = b.author_id
         SQL;
 
         $statement = $this->db->query($query);
+
+        return $this->fetchLazy($statement);
+    }
+
+    public function findBy(string $name): Generator
+    {
+        $query = <<<SQL
+        SELECT name, COALESCE(title, '<none> (no books found)') AS book
+            FROM authors a
+        LEFT JOIN books b
+            ON a.id = b.author_id
+        WHERE a.name LIKE :name
+        SQL;
+
+        $statement = $this->db->prepare($query);
+        $statement->execute(['name' => '%' . $name . '%']);
 
         return $this->fetchLazy($statement);
     }

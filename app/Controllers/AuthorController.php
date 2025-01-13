@@ -15,7 +15,12 @@ class AuthorController
 
     public function index(): View
     {
-        $authors = $this->author->all();
+        $name = $_GET['author'] ?? '';
+        if ($name) {
+            $authors = $this->author->findBy($name);
+        } else {
+            $authors = $this->author->all();
+        }
 
         return View::make('authors', ['authors' => $authors]);
     }

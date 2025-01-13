@@ -22,7 +22,6 @@ declare(strict_types=1);
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
             min-height: 100vh;
             background-color: #f4f4f9;
         }
@@ -96,7 +95,6 @@ declare(strict_types=1);
             flex: 1;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px 0 0 4px;
             font-size: 16px;
         }
 
@@ -114,18 +112,21 @@ declare(strict_types=1);
             background-color: #5753d9;
         }
     </style>
+    <script>
+        console.log('Hello World!');
+
+    </script>
 </head>
 <body>
 <main>
     <header>
         <h1>Transfermate PHP Test</h1>
-        <!--        <p>Discover some of the most popular books and the brilliant authors behind them.</p>-->
         <p>By Mario Joseph Esteban</p>
     </header>
     <form method='GET' action=''>
         <label>
-            <input type='text' name='search' placeholder='Search by author'
-                   value="<?= htmlspecialchars($_GET['search'] ?? '', ENT_QUOTES) ?>">
+            <input type='text' name='author' placeholder='Search by author'
+                   value="<?= htmlspecialchars($_GET['author'] ?? '', ENT_QUOTES) ?>">
         </label>
         <button type='submit'>Search</button>
     </form>
@@ -138,13 +139,17 @@ declare(strict_types=1);
         </thead>
         <tbody>
         <?php
-        if (!empty($authors)) : ?>
+        if (!empty($authors) && !empty($authors->current())) : ?>
             <?php foreach ($authors as $author) : ?>
                 <tr>
-                    <td><?= $author->name ?></td>
-                    <td><?= $author->book ?></td>
+                    <td><?= htmlspecialchars($author->name, ENT_QUOTES) ?></td>
+                    <td><?= htmlspecialchars($author->book, ENT_QUOTES) ?></td>
                 </tr>
             <?php endforeach ?>
+        <?php else : ?>
+            <tr>
+                <td colspan="2">No authors found.</td>
+            </tr>
         <?php endif ?>
         </tbody>
     </table>
