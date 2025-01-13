@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\XMLServices;
 
-use App\App;
-use App\DB;
 use App\Exceptions\FileNotFoundException;
 use DOMDocument;
 use Exception;
@@ -14,15 +12,13 @@ use XMLReader;
 
 class XMLProcessor
 {
-    private DB $db;
+    public array $booksBuffer = [];
     private string $schema;
-    private XMLReader $parser;
-    private array $buffer = [];
+    private XMLReader $xmlReader;
 
     public function __construct()
     {
-        $this->parser = new XMLReader();
-        $this->db = App::db();
+        $this->xmlReader = new XMLReader();
         $this->schema = __DIR__.'/../../../config/books-format.xsd';
     }
 
@@ -32,19 +28,19 @@ class XMLProcessor
             throw new RuntimeException("File $filePath is not encoded in UTF-8.");
         }
 
-        $this->parser->open($filePath, 'utf-8');
+        $this->xmlReader->open($filePath, 'utf-8');
         try {
-            if ($this->parser->setSchema($this->getSchema())) {
-                while ($this->parser->read()) {
-                    if ($this->parser->nodeType == XMLReader::ELEMENT && $this->parser->localName === 'book') {
-                        $this->processBook();
+            if ($this->xmlReader->setSchema($this->getSchema())) {
+                while ($this->xmlReader->read()) {
+                    if ($this->xmlReader->nodeType == XMLReader::ELEMENT && $this->xmlReader->localName === 'book') {
+                        $this->extractInNodes();
                     }
                 }
             }
         } catch (Exception $exception) {
             echo $exception->getMessage();
         } finally {
-            $this->parser->close();
+            $this->xmlReader->close();
         }
     }
 
@@ -65,29 +61,29 @@ class XMLProcessor
         return $this->schema;
     }
 
-    private function processBook(): void
+    private function extractInNodes()
     {
         $author = '';
         $title = '';
 
-        while ($this->parser->read()) {
-            if ($this->parser->nodeType == XMLReader::ELEMENT && $this->parser->localName === 'author') {
-                $this->parser->read();
-                $author = $this->parser->value;
+        while ($this->xmlReader->read()) {
+            if ($this->xmlReader->nodeType == XMLReader::ELEMENT && $this->xmlReader->localName === 'author') {
+                $this->xmlReader->read();
+                $author = $this->xmlReader->value;
             }
 
-            if ($this->parser->nodeType == XMLReader::ELEMENT && $this->parser->localName === 'name') {
-                $this->parser->read();
-                $title = $this->parser->value;
+            if ($this->xmlReader->nodeType == XMLReader::ELEMENT && $this->xmlReader->localName === 'name') {
+                $this->xmlReader->read();
+                $title = $this->xmlReader->value;
             }
 
-            if ($this->parser->nodeType == XMLReader::END_ELEMENT && $this->parser->localName === 'book') {
+            if ($this->xmlReader->nodeType == XMLReader::END_ELEMENT && $this->xmlReader->localName === 'book') {
                 break;
             }
         }
 
         if ($author && $title) {
-            $this->save($author, $title);
+            $this->booksBuffer[] = ['author' => $author, 'title' => $title];
         }
     }
 
@@ -98,19 +94,18 @@ class XMLProcessor
 
             $insert = $this->db->prepare(
                 <<<SQL
-                    WITH author AS (
-                        INSERT INTO authors (name)
-                        VALUES (:name)
+                WITH 
+                new_author AS (
+                    INSERT INTO authors (name) VALUES (:name)
                         ON CONFLICT (name) DO NOTHING
                         RETURNING id
-                    ),
-                    existing_author AS (
-                        SELECT id FROM authors WHERE name = :name
-                    )
-                    INSERT INTO books (title, author_id)
-                        SELECT :title, COALESCE(author.id, existing_author.id)
-                        FROM author
-                        LEFT JOIN existing_author ON true
+                ),
+                existing_author AS (
+                    SELECT id FROM authors WHERE name = :name
+                )
+                INSERT INTO books (title, author_id)
+                VALUES (:title, COALESCE((SELECT id FROM new_author), (SELECT id FROM existing_author)))
+                    ON CONFLICT (title, author_id) DO NOTHING
                 SQL
             );
 
