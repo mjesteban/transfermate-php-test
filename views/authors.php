@@ -60,19 +60,36 @@ declare(strict_types=1);
             }
         }
 
-        header {
-            display: flex
-            text-align: center;
-            justify-content: center;
-            margin: 20px auto;
-            min-width: 500px;
-        }
-
         form {
             display: flex;
             justify-content: center;
-            margin: 20px auto;
+            margin: 20px;
             max-width: 800px;
+        }
+
+        form label {
+            flex: 1;
+            display: flex;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            flex: 1;
+            margin: 0;
+        }
+
+        header p {
+            flex: 1;
+            text-align: right;
+            margin: 0;
         }
 
         input[type='text'] {
